@@ -3,11 +3,11 @@ import java.util.Scanner;
 public class CalcularIP {
 
     public static void obtenerParametros (String IP, int CDIR){
-
+        //Con la IP y el CDIR validados, realizamos los cálculos para obtener sus parámetros.
     }
 
     public static void obtenerParametros2 (String IP, String mask){
-
+        //Con la IP y la máscara validados, realizamos los cálculos para obtener sus parámetros.
     }
 
     public static Boolean validarMascara (String mask) {
@@ -16,11 +16,15 @@ public class CalcularIP {
             if (mask.charAt(i) == '.') {
                 cont++;
             }
-            if (cont > 3) {
+            if (mask.charAt(i) == '.' && (mask.charAt(i + 1) == '.')) {
+                cont = 0;
+                return false; //Contiene dos puntos juntos.
+
+            } else  if (cont > 3) {
                 cont = 0;
                 return false; //Contiene más de tres puntos.
-            }
-            if (mask.charAt(0) == '.' || mask.charAt(mask.length() - 1) == '.') {
+
+            } else  if (mask.charAt(0) == '.' || mask.charAt(mask.length() - 1) == '.') {
                 cont = 0;
                 return false; //Contiene puntos al principio o al final.
             }
@@ -47,7 +51,6 @@ public class CalcularIP {
         String ip;
         String mask;
         int CIDR;
-        int cont = 0;
         int opcion;
         Scanner sc = new Scanner (System.in);
 
