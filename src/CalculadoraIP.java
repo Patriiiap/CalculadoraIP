@@ -20,7 +20,10 @@ public class CalculadoraIP {
         int contadorPunto = 0;
         boolean salir = true;
 
+
         do{
+            salir = true;
+
             try{
                 IP = sc.nextLine();
 
@@ -115,7 +118,7 @@ public class CalculadoraIP {
                 //Sin Terminar
 
                 String[] substring = IP.split("\\."); /*Split es para dividir la ip en partes. El caracter
-                                                  que marca el momento de división es el punto.*/
+                                                              que marca el momento de división es el punto.*/
                 String substring1 = substring[0];
                 String substring2 = substring[1];
                 String substring3 = substring[2];
@@ -150,9 +153,9 @@ public class CalculadoraIP {
             }
             catch (Exception e){
                 System.out.println("Se ha introducido una IP incorrrecta, inténtalo de nuevo");
-                sc.nextLine();
+                salir = false;
             }
-        } while();
+        } while(salir == false);
 
         return(IP);
     }
