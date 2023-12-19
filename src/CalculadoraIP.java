@@ -7,16 +7,18 @@ public class CalculadoraIP {
 
         System.out.println("Inserta tu IP");
         String IP = validarIP();
+
+        System.out.println(IP);
     }
 
     public static String validarIP(){
 
         Scanner sc = new Scanner(System.in);
 
-        boolean salir = false;
         String IP = "";
         char punto = '.';
         int contadorPunto = 0;
+        boolean salir = true;
 
         do{
             try{
@@ -52,7 +54,6 @@ public class CalculadoraIP {
                         }
                     }
                 } while (contadorPunto != 3);
-
 
                 //Captura que no haya puntos en el índice 0 y último índice
                 do{
@@ -107,48 +108,51 @@ public class CalculadoraIP {
 
                 } while (segundaPosPunto == primeraPosPunto + 1 || terceraPosPunto == segundaPosPunto + 1);
 
-                //Pasamos los substring a int (vamos a coger las variables de punto de la función anterior)
+
+
+                //Verificar de los número solo pueden ir del 0 al 255
+                //Pasamos los substring a int
                 //Sin Terminar
 
-                int largo = IP.length();
+                String[] substring = IP.split("\\."); /*Split es para dividir la ip en partes. El caracter
+                                                  que marca el momento de división es el punto.*/
+                String substring1 = substring[0];
+                String substring2 = substring[1];
+                String substring3 = substring[2];
+                String substring4 = substring[3];;
 
-                char[] IPChar = new char[largo];
+                //Pasamos a int los string
 
-                IPChar.toString();
+                int subint1 = Integer.parseInt(substring1);
+                int subint2 = Integer.parseInt(substring2);
+                int subint3 = Integer.parseInt(substring3);
+                int subint4 = Integer.parseInt(substring4);
 
-                for(int i = 0; i < largo; i++){
-                    IPChar[i] = IP.charAt(i);
+                while (subint1 < 0 || subint1 > 255 || subint2 < 0 || subint2 > 255 || subint3 < 0 || subint3 > 255 || subint4 < 0 || subint4 > 255){
+                    System.out.println("IP no válida, debes insertar valores entre el 0 y el 255");
+                    IP = sc.nextLine();
+                    //limpiamos las variables y rehacemos el proceso.
+                    substring = IP.split("\\."); /*Split es para dividir la ip en partes. El caracter
+                                                  que marca el momento de división es el punto.*/
+                    substring1 = substring[0];
+                    substring2 = substring[1];
+                    substring3 = substring[2];
+                    substring4 = substring[3];;
+
+                    //Pasamos a int los string
+
+                    subint1 = Integer.parseInt(substring1);
+                    subint2 = Integer.parseInt(substring2);
+                    subint3 = Integer.parseInt(substring3);
+                    subint4 = Integer.parseInt(substring4);
                 }
-
-                String[] substring1 = new String[primeraPosPunto];
-                String[] substring2 = new String[segundaPosPunto - primeraPosPunto];
-                String[] substring3 = new String[terceraPosPunto - segundaPosPunto];
-                String[] substring4 = new String[IP.length() - terceraPosPunto];
-
-                for(int i = 0; i < primeraPosPunto; i++) {
-                    substring1[i] = String.valueOf(IPChar[i]);
-                    System.out.print(substring1[i]);
-                }
-                for(int i = primeraPosPunto + 1; i < segundaPosPunto - 1; i++) {
-                    substring2[i] = String.valueOf(IPChar[i]);
-                    System.out.print(substring2[i]);
-                }
-                for(int i = segundaPosPunto + 1; i < terceraPosPunto - 1; i++) {
-                    substring2[i] = String.valueOf(IPChar[i]);
-                    System.out.print(substring3[i]);
-                }
-                for(int i = terceraPosPunto + 1; i < IP.length() - 1; i++) {
-                    substring2[i] = String.valueOf(IPChar[i]);
-                    System.out.print(substring4[i]);
-                }
-
-
 
             }
             catch (Exception e){
-
+                System.out.println("Se ha introducido una IP incorrrecta, inténtalo de nuevo");
+                sc.nextLine();
             }
-        } while (salir = false);
+        } while();
 
         return(IP);
     }
