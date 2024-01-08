@@ -17,7 +17,7 @@ public class CalculadoraIP {
 
 
 
-        //Dividimos la IP en 4 partes.
+        //DIVIDIMOS la IP en 4 partes.
         String[] octetoIP = IP.split("\\."); /*Split es para dividir la ip en partes. El caracter que marca el momento de división es el punto.*/
 
         String octeto1IP = octetoIP[0];
@@ -32,11 +32,11 @@ public class CalculadoraIP {
 
 
 
-        //Creamos un Array de Enteros para guardar la IP en Binario.
+        //CREAMOS un Array de Enteros para guardar la IP en Binario.
         int [] ArrayIP = TransformarArray(octeto1IPBin, octeto2IPBin, octeto3IPBin, octeto4IPBin);
 
 
-        //Dividimos la máscara en 4 partes.
+        //DIVIDIMOS la máscara en 4 partes.
         String[] octetoMascara = mascara.split("\\.");
 
         String octeto1Mascara = octetoMascara[0];
@@ -49,11 +49,36 @@ public class CalculadoraIP {
         String octeto3MascaraBin = PasarBinario(octeto3Mascara);
         String octeto4MascaraBin = PasarBinario(octeto4Mascara);
 
-        //Creamos un Array de Enteros para guardar la máscara en Binario.
+        //CREAMOS un Array de Enteros para guardar la máscara en Binario.
 
         int[] ArrayMascara = TransformarArray(octeto1MascaraBin, octeto2MascaraBin, octeto3MascaraBin, octeto4MascaraBin);
 
 
+
+
+
+        System.out.println("Calculo Binario Dirección de Red");
+        imprimirArray(ArrayIP);
+        System.out.println(" ");
+        imprimirArray(ArrayMascara);
+        System.out.println(" ");
+
+        //CREAMOS un Array para guardar la direcc de red en Binario.
+        int [] ArrayDireccRed = MultiplicarIPMasc(ArrayIP, ArrayMascara);
+        imprimirArray(ArrayDireccRed);
+        System.out.println(" ");
+
+
+        System.out.println("Calculo Binario Broadcast: ");
+        imprimirArray(ArrayIP);
+        System.out.println(" ");
+        imprimirArray(ArrayMascara);
+        System.out.println(" ");
+
+        //CREAMOS un Array para guardar la direcc de Broadcast en Binario.
+        int[] ArrayBroadcast = BroadcastBin(ArrayIP, ArrayMascara);
+        imprimirArray(ArrayBroadcast);
+        System.out.println(" ");
 
 
 
@@ -128,7 +153,7 @@ public class CalculadoraIP {
 
         boolean valido = true;
 
-        for(int i = 0; i < IP.length(); i++){
+        for(int i = 0; i < IP.length(); i++){   //Usamos el codigo ASCII para comprobar que solo se insertan numeros o puntos.
             char caracter = IP.charAt(i);
             int caracterInt = (int) caracter;
             if(caracterInt != 46 && caracterInt < 48 || caracterInt > 57){
@@ -254,7 +279,7 @@ public class CalculadoraIP {
 
 
 
-//Función para tener los octetos en un Array de Enteros
+//FUNCION para tener los octetos en un Array de Enteros
 
     public static int[] TransformarArray(String octeto1, String octeto2, String octeto3, String octeto4){
 
@@ -302,6 +327,46 @@ public class CalculadoraIP {
 
         return(arrayInt);
     }
+
+
+//FUNCION para multiplicar IP y Máscara Binario (Para conseguir la Direccion de red en Binario)
+
+    public static int[] MultiplicarIPMasc (int[] ArrayIP, int[] ArrayMascara){
+
+        int [] ArrayDireccRed = new int[32];
+
+        for(int i = 0; i < ArrayDireccRed.length; i++){
+            ArrayDireccRed[i] = (ArrayIP[i] * ArrayMascara[i]);
+        }
+
+        return(ArrayDireccRed);
+    }
+
+//FUNCION para sacar la dirección de Broadcast en Binario
+
+    public static int[] BroadcastBin (int[] ArrayIP, int[] ArrayMascara){
+
+        int[] ArrayBroadcast = new int[32];
+
+        for(int i = 0; i < ArrayBroadcast.length; i++) {
+
+            if (ArrayIP[i] == 0 && ArrayMascara[i] == 0){
+                ArrayBroadcast[i] = 0;
+            }
+            else if (ArrayIP[i] == 1 && ArrayMascara[i] == 0){
+                ArrayBroadcast[i] = 1;
+            }
+            else if (ArrayIP[i] == 0 && ArrayMascara[i] == 1){
+                ArrayBroadcast[i] = 1;
+            }
+            else if(ArrayIP[i] == 1 && ArrayMascara[i] == 1){
+                ArrayBroadcast[i] = 1;
+            }
+        }
+
+        return(ArrayBroadcast);
+    }
+
 
 
 
