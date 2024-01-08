@@ -34,9 +34,6 @@ public class CalculadoraIP {
 
         //Creamos un Array de Enteros para guardar la IP en Binario.
         int [] ArrayIP = TransformarArray(octeto1IPBin, octeto2IPBin, octeto3IPBin, octeto4IPBin);
-        System.out.println("Array IP");
-        imprimirArray(ArrayIP);
-
 
 
         //Dividimos la máscara en 4 partes.
@@ -55,13 +52,16 @@ public class CalculadoraIP {
         //Creamos un Array de Enteros para guardar la máscara en Binario.
 
         int[] ArrayMascara = TransformarArray(octeto1MascaraBin, octeto2MascaraBin, octeto3MascaraBin, octeto4MascaraBin);
-        System.out.println("Array Máscara");
-        imprimirArray(ArrayMascara);
+
 
 
 
 
     }
+
+
+
+    //FUNCIONES
 
     public static String validarIP(){
 
@@ -302,6 +302,20 @@ public class CalculadoraIP {
 
         return(arrayInt);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public static void imprimirArray(int [] array){
 
