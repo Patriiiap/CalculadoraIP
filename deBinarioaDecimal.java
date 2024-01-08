@@ -46,7 +46,7 @@ public class deBinarioaDecimal {
         System.out.println("Ahora inserta una máscara válida: ");
         String mascara = sc.nextLine();
 
-        String[] octetomascara = IP.split("\\.");
+        String[] octetomascara = mascara.split("\\.");
 
 
         String octetomascara1 = octetomascara[0]; //Estas son las partes.
