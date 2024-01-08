@@ -1,0 +1,31 @@
+/*La explicación de esta función es bien easy.
+
+Aquí se trabaja con el binario del primer octeto de la IP, por tanto solo vamos a tener 2 números que son el 0 y el 1.
+Lo que hace la función es mirar el primer caracter (que está en el índice 0) y si ese caracter es un 0, dictamina que la CLASE es la A. Si es un 1, necesitamos saber el número del segundo
+caracter (que sería el índice 1). Si este indice 1 es 0, dictamina que la CLASE es la B y si es este índice es un 1, necesitamos saber el número del tercer caracter (que sería el
+indice 2)... y así sucesivamente.*/
+
+public static void AveriguarClase(String octeto1binario) {
+        char primerCaracter = octeto1binario.charAt(0);
+
+        if (primerCaracter == '0') {
+            System.out.println("La IP es: CLASE A");
+        } else if (primerCaracter == '1') {
+            char segundoCaracter = octeto1binario.charAt(1);
+            if (segundoCaracter == '0') {
+                System.out.println("La IP es: CLASE B");
+            } else if (segundoCaracter == '1') {
+                char tercerCaracter = octeto1binario.charAt(2);
+                if (tercerCaracter == '0') {
+                    System.out.println("La IP es: CLASE C");
+                } else if (tercerCaracter == '1') {
+                    char cuartoCaracter = octeto1binario.charAt(3);
+                    if (cuartoCaracter == '0') {
+                        System.out.println("La IP es: CLASE D");
+                    } else if (cuartoCaracter == '1') {
+                        System.out.println("La IP es: CLASE E");
+                    }
+                }
+            }
+        }
+    }
