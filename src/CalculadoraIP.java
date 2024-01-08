@@ -254,7 +254,7 @@ public class CalculadoraIP {
 
 
 
-//Función para tener los octetos en un Array de Eneteros
+//Función para tener los octetos en un Array de Enteros
 
     public static int[] TransformarArray(String octeto1, String octeto2, String octeto3, String octeto4){
 
