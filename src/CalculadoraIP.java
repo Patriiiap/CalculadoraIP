@@ -13,7 +13,7 @@ public class CalculadoraIP {
         //System.out.println("Ahora elige cómo quieres insertar la máscara: 1 Decimal 2 CDIR: ");
         //int eleccionMascara = eleccionMascara();
 
-        String mascara = "255.255.192.0";
+        String mascara = "255.240.0.0";
 
 
 
@@ -55,30 +55,36 @@ public class CalculadoraIP {
 
 
 
-
-
-        System.out.println("Calculo Binario Dirección de Red");
-        imprimirArray(ArrayIP);
+        /*System.out.println("Calculo Binario Dirección de Red");
+        imprimirArrayInt(ArrayIP);
         System.out.println(" ");
-        imprimirArray(ArrayMascara);
-        System.out.println(" ");
+        imprimirArrayInt(ArrayMascara);
+        System.out.println(" ");*/
 
         //CREAMOS un Array para guardar la direcc de red en Binario.
         int [] ArrayDireccRed = MultiplicarIPMasc(ArrayIP, ArrayMascara);
-        imprimirArray(ArrayDireccRed);
-        System.out.println(" ");
+        /*imprimirArrayInt(ArrayDireccRed);
+        System.out.println(" ");*/
+        int numeroDe0s = numeroDe0s(ArrayDireccRed); //COntamos los 0s para poder calcular el broadcast
 
 
         System.out.println("Calculo Binario Broadcast: ");
-        imprimirArray(ArrayIP);
+        imprimirArrayInt(ArrayIP);
         System.out.println(" ");
-        imprimirArray(ArrayMascara);
+        imprimirArrayInt(ArrayMascara);
         System.out.println(" ");
 
         //CREAMOS un Array para guardar la direcc de Broadcast en Binario.
-        int[] ArrayBroadcast = BroadcastBin(ArrayIP, ArrayMascara);
-        imprimirArray(ArrayBroadcast);
+        int[] ArrayBroadcast = BroadcastBin(ArrayIP, ArrayDireccRed, numeroDe0s);
+        imprimirArrayInt(ArrayBroadcast);
         System.out.println(" ");
+
+
+        String direccion = SepararBinarios(ArrayDireccRed);
+        System.out.println("La dirección de red es: " + direccion);
+
+        String direccionBroadcast = SepararBinarios(ArrayBroadcast);
+        System.out.println("La dirección de Broadcast es: " + direccionBroadcast);
 
 
 
@@ -298,14 +304,14 @@ public class CalculadoraIP {
                     j = 0;
                 }
             }
-            if(i > 7 && i <= 14){
+            if(i > 7 && i <= 15){
                 array[i] = octeto2.charAt(j);
                 j++;
                 if (j > 7){
                     j = 0;
                 }
             }
-            if(i > 14 && i <= 23) {
+            if(i > 15 && i <= 23) {
                 array[i] = octeto3.charAt(j);
                 j++;
                 if (j > 7) {
@@ -342,29 +348,144 @@ public class CalculadoraIP {
         return(ArrayDireccRed);
     }
 
+//FUNCION para contar en numero de 0s de la dirección de red.
+
+    public static int numeroDe0s (int [] ArrayDireccRed){
+
+        int numeroDe0s = 0;
+        boolean entrar = true;
+
+        for(int i = ArrayDireccRed.length - 1; i > 0; i = i-1){                                     //EN MANTENIMIENTO
+
+            if (ArrayDireccRed[i] == 0 && entrar == true){
+                numeroDe0s++;
+            }
+            if (ArrayDireccRed[i] == 1){
+                entrar = false;
+            }
+
+        }
+
+        return(numeroDe0s);
+    }
+
 //FUNCION para sacar la dirección de Broadcast en Binario
 
-    public static int[] BroadcastBin (int[] ArrayIP, int[] ArrayMascara){
+    public static int[] BroadcastBin (int[] ArrayIP, int[] ArrayDireccRed, int numeroDe0s){         //EN MANTENIMIENTO
 
         int[] ArrayBroadcast = new int[32];
+        int posicion = ArrayDireccRed.length - numeroDe0s;
 
-        for(int i = 0; i < ArrayBroadcast.length; i++) {
+        for(int i = ArrayBroadcast.length - 1; i >= 0; i--) {
 
-            if (ArrayIP[i] == 0 && ArrayMascara[i] == 0){
-                ArrayBroadcast[i] = 0;
-            }
-            else if (ArrayIP[i] == 1 && ArrayMascara[i] == 0){
+            if(i >= numeroDe0s){
                 ArrayBroadcast[i] = 1;
             }
-            else if (ArrayIP[i] == 0 && ArrayMascara[i] == 1){
-                ArrayBroadcast[i] = 1;
-            }
-            else if(ArrayIP[i] == 1 && ArrayMascara[i] == 1){
-                ArrayBroadcast[i] = 1;
+            else{
+                ArrayBroadcast[i] = ArrayIP[i];
             }
         }
 
         return(ArrayBroadcast);
+    }
+
+
+//FUNCION Separar Arrays ENteros (Binario) e imprimir el resultado.
+
+    public static String SepararBinarios (int[] ArrayBinarios){
+
+        String[] ArrayCaracteres = new String[32];
+
+        String[] octeto1 = new String[8];
+        String[] octeto2 = new String[8];
+        String[] octeto3 = new String[8];
+        String[] octeto4 = new String[8];
+
+        for(int i = 0; i < ArrayBinarios.length; i++){
+            ArrayCaracteres[i]  = String.valueOf(ArrayBinarios[i]);     //Guardamos los caracteres en binario en un Array tipo String (porque en un Array tipo char no los guarda)
+        }
+
+        int j = 0;
+
+        for (int i = 0; i < ArrayCaracteres.length; i++){
+            if(i <= 7){
+                octeto1[j] = ArrayCaracteres[i];
+                j++;
+                if (j > 7){
+                    j = 0;
+                }
+            }
+            if(i > 7 && i <= 15){
+                octeto2[j] = ArrayCaracteres[i];
+                j++;
+                if (j > 7){
+                    j = 0;
+                }
+            }
+            if(i > 15 && i <= 23) {
+                octeto3[j] = ArrayCaracteres[i];
+                j++;
+                if (j > 7) {
+                    j = 0;
+                }
+            }
+            if(i > 23 && i <= 31) {
+                octeto4[j] = ArrayCaracteres[i];
+                j++;
+                if (j > 7) {
+                    j = 0;
+                }
+            }
+        }
+
+        /*imprimirArray(octeto1);
+        System.out.println(" ");
+        imprimirArray(octeto2);
+        System.out.println(" ");
+        imprimirArray(octeto3);
+        System.out.println(" ");
+        imprimirArray(octeto4);*/
+
+        //Pasamos a String los Arrays
+        StringBuffer octeto1String = new StringBuffer();
+        StringBuffer octeto2String = new StringBuffer();
+        StringBuffer octeto3String = new StringBuffer();
+        StringBuffer octeto4String = new StringBuffer();
+
+        for(int i = 0; i < octeto1.length; i++){
+            octeto1String = octeto1String.append(octeto1[i]);
+        }
+        octeto1String.toString();
+
+
+        for(int i = 0; i < octeto2.length; i++){
+            octeto2String = octeto2String.append(octeto2[i]);
+        }
+        octeto2String.toString();
+
+
+        for(int i = 0; i < octeto3.length; i++){
+            octeto3String = octeto3String.append(octeto3[i]);
+        }
+        octeto3String.toString();
+
+
+        for(int i = 0; i < octeto4.length; i++){
+            octeto4String = octeto4String.append(octeto4[i]);
+        }
+        octeto4String.toString();
+
+
+        //Pasamos a decimal los String en Binario
+
+        int octeto1final = Integer.parseInt(String.valueOf(octeto1String), 2);
+        int octeto2final = Integer.parseInt(String.valueOf(octeto2String), 2);
+        int octeto3final = Integer.parseInt(String.valueOf(octeto3String), 2);
+        int octeto4final = Integer.parseInt(String.valueOf(octeto4String), 2);
+
+        String direccion = octeto1final + "." + octeto2final + "." + octeto3final + "." + octeto4final;
+
+        return(direccion);
     }
 
 
@@ -382,7 +503,15 @@ public class CalculadoraIP {
 
 
 
-    public static void imprimirArray(int [] array){
+    public static void imprimirArray(String [] array){
+
+        for(int i = 0; i < array.length; i++){
+            System.out.print(array[i]);
+        }
+
+    }
+
+    public static void imprimirArrayInt(int [] array){
 
         for(int i = 0; i < array.length; i++){
             System.out.print(array[i]);
