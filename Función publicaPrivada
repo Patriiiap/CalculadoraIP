@@ -1,0 +1,15 @@
+/*Para saber si la IP es pública o privada hay que mirar como empieza. Si empieza con unos números determinados que son los que hay en la función
+es que es privada. Si no empieza por esos números es que es pública.*/
+
+public static void publicaPrivada(String IP) {
+        if (IP.startsWith("10.") || IP.startsWith("192.168.") || IP.startsWith("172.16.") ||
+                IP.startsWith("172.17.") || IP.startsWith("172.18.") || IP.startsWith("172.19.") ||
+                IP.startsWith("172.20.") || IP.startsWith("172.21.") || IP.startsWith("172.22.") ||
+                IP.startsWith("172.23.") || IP.startsWith("172.24.") || IP.startsWith("172.25.") ||
+                IP.startsWith("172.26.") || IP.startsWith("172.27.") || IP.startsWith("172.28.") ||
+                IP.startsWith("172.29.") || IP.startsWith("172.30.") || IP.startsWith("172.31.")) {
+            System.out.println("La IP es: PRIVADA");
+        } else {
+            System.out.println("La IP es: PÚBLICA");
+        }
+    }
