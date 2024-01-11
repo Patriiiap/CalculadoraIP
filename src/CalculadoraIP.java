@@ -13,7 +13,7 @@ public class CalculadoraIP {
         //System.out.println("Ahora elige cómo quieres insertar la máscara: 1 Decimal 2 CDIR: ");
         //int eleccionMascara = eleccionMascara();
 
-        String mascara = "255.240.0.0";
+        String mascara = "255.255.255.192";
 
 
 
@@ -65,28 +65,28 @@ public class CalculadoraIP {
         int [] ArrayDireccRed = MultiplicarIPMasc(ArrayIP, ArrayMascara);
         /*imprimirArrayInt(ArrayDireccRed);
         System.out.println(" ");*/
-        int numeroDe0s = numeroDe0s(ArrayDireccRed); //COntamos los 0s para poder calcular el broadcast
+        int numeroDe0s = numeroDe0s(ArrayMascara); //COntamos los 0s para poder calcular el broadcast
 
 
-        System.out.println("Calculo Binario Broadcast: ");
+        /*System.out.println("Calculo Binario Broadcast: ");
         imprimirArrayInt(ArrayIP);
         System.out.println(" ");
         imprimirArrayInt(ArrayMascara);
-        System.out.println(" ");
+        System.out.println(" ");*/
 
         //CREAMOS un Array para guardar la direcc de Broadcast en Binario.
-        int[] ArrayBroadcast = BroadcastBin(ArrayIP, ArrayDireccRed, numeroDe0s);
-        imprimirArrayInt(ArrayBroadcast);
-        System.out.println(" ");
+        int[] ArrayBroadcast = BroadcastBin(ArrayDireccRed, ArrayMascara);
+        //imprimirArrayInt(ArrayBroadcast);
 
 
-        String direccion = SepararBinarios(ArrayDireccRed);
-        System.out.println("La dirección de red es: " + direccion);
+        String direccionRed = SepararBinarios(ArrayDireccRed);
+        System.out.println("La dirección de red es: " + direccionRed);
 
         String direccionBroadcast = SepararBinarios(ArrayBroadcast);
         System.out.println("La dirección de Broadcast es: " + direccionBroadcast);
 
-
+        int numHosts = CalcularHosts(numeroDe0s);
+        System.out.println("Número de Hosts disponibles: " + numHosts);
 
     }
 
@@ -350,20 +350,16 @@ public class CalculadoraIP {
 
 //FUNCION para contar en numero de 0s de la dirección de red.
 
-    public static int numeroDe0s (int [] ArrayDireccRed){
+    public static int numeroDe0s (int [] ArrayMascara){
 
         int numeroDe0s = 0;
         boolean entrar = true;
 
-        for(int i = ArrayDireccRed.length - 1; i > 0; i = i-1){                                     //EN MANTENIMIENTO
+        for(int i = ArrayMascara.length - 1; i > 0; i = i-1){                                     //EN MANTENIMIENTO
 
-            if (ArrayDireccRed[i] == 0 && entrar == true){
+            if (ArrayMascara[i] == 0 && entrar == true){
                 numeroDe0s++;
             }
-            if (ArrayDireccRed[i] == 1){
-                entrar = false;
-            }
-
         }
 
         return(numeroDe0s);
@@ -371,18 +367,34 @@ public class CalculadoraIP {
 
 //FUNCION para sacar la dirección de Broadcast en Binario
 
-    public static int[] BroadcastBin (int[] ArrayIP, int[] ArrayDireccRed, int numeroDe0s){         //EN MANTENIMIENTO
+    public static int[] BroadcastBin (int[] ArrayDireccRed, int[] ArrayMascara){         //EN MANTENIMIENTO
 
         int[] ArrayBroadcast = new int[32];
-        int posicion = ArrayDireccRed.length - numeroDe0s;
+        int[] ArrayNotMascara = new int[32];
 
-        for(int i = ArrayBroadcast.length - 1; i >= 0; i--) {
+        //Hacemos la operacion  NOT Mascara (Cambiamos los 0s por 1s)
+        for(int i = 0; i < ArrayMascara.length; i++){
+            if(ArrayMascara[i] == 0){
+                ArrayNotMascara[i] = 1;
+            }
+            if (ArrayMascara[i] == 1){
+                ArrayNotMascara[i] = 0;
+            }
+        }
 
-            if(i >= numeroDe0s){
+        //Hacemos operacion IP OR NOT Mascara (Sumamos de forma lógica los 0s y 1s)
+        for(int i = 0; i < ArrayDireccRed.length; i++){
+            if(ArrayDireccRed[i] == 1 && ArrayNotMascara[i] == 1){
                 ArrayBroadcast[i] = 1;
             }
-            else{
-                ArrayBroadcast[i] = ArrayIP[i];
+            if(ArrayDireccRed[i] == 1 && ArrayNotMascara[i] == 0){
+                ArrayBroadcast[i] = 1;
+            }
+            if(ArrayDireccRed[i] == 0 && ArrayNotMascara[i] == 1){
+                ArrayBroadcast[i] = 1;
+            }
+            if(ArrayDireccRed[i] == 0 && ArrayNotMascara[i] == 0){
+                ArrayBroadcast[i] = 0;
             }
         }
 
@@ -486,6 +498,12 @@ public class CalculadoraIP {
         String direccion = octeto1final + "." + octeto2final + "." + octeto3final + "." + octeto4final;
 
         return(direccion);
+    }
+
+    public static int CalcularHosts (int numDe0s){
+        // int resultado = 2^n - 2;
+        int numHosts = (int) Math.pow(2,numDe0s)-2;
+        return (numHosts);
     }
 
 
