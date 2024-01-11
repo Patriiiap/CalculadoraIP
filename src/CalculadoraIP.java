@@ -501,7 +501,7 @@ public class CalculadoraIP {
     }
 
     public static int CalcularHosts (int numDe0s){
-        // int resultado = 2^n - 2;
+
         int numHosts = (int) Math.pow(2,numDe0s)-2;
         return (numHosts);
     }
