@@ -1,20 +1,18 @@
+import java.lang.reflect.Array;
 import java.util.Scanner;
 public class CalcularIP {
 
-    public static void main(String[] args){
-        String ip;
-        String mask;
+    public static void main(String[] args) {
+        String IP = "";
+        String mascara = "";
         int CIDR;
         int opcion;
-        Scanner sc = new Scanner (System.in);
+        Scanner sc = new Scanner(System.in);
 
-        System.out.println("Introduce una IP para calcular sus parámetros.");
-        String IP = validarIP();
+        System.out.println("Introduce una IP para calcular sus parámetros:");
+        IP = validarIP();
 
         System.out.println("Tu IP es: " + IP);
-
-        //System.out.println("Ahora elige cómo quieres insertar la máscara: 1 Decimal 2 CDIR: ");
-        //int eleccionMascara = eleccionMascara();
 
         System.out.println("Ahora, ¿qué notación quieres utilizar para introducir la máscara? (PULSA 1 o 2)");
         System.out.println("1. Notación CIDR       2. Notación decimal");
@@ -22,17 +20,17 @@ public class CalcularIP {
         try {
             do {
                 opcion = sc.nextInt();
-                if (opcion > 2 || opcion < 1){
+                if (opcion > 2 || opcion < 1) {
                     System.out.println("Introduce una opción válida.");
                 }
             } while (opcion > 2 || opcion < 1);
 
-            switch (opcion){
+            switch (opcion) {
                 case 1:
                     do {
                         System.out.println("Introduce el CIDR:");
                         CIDR = sc.nextInt();
-                        if (!validarCIDR(CIDR)){
+                        if (!validarCIDR(CIDR)) {
                             System.out.println("El CIDR debe ser un número del 0 al 32.");
                         }
                     } while (!validarCIDR(CIDR));
@@ -40,16 +38,32 @@ public class CalcularIP {
 
                 case 2:
                     System.out.println("Introduce la máscara:");
-                    validarMascara();
+                    mascara = validarMascara();
+                    String[] octetoMascara = mascara.split("\\.");
+
+                    String octeto1Mascara = octetoMascara[0];
+                    String octeto2Mascara = octetoMascara[1];
+                    String octeto3Mascara = octetoMascara[2];
+                    String octeto4Mascara = octetoMascara[3];
+
+                    String octeto1MascaraBin = PasarBinario(octeto1Mascara);
+                    String octeto2MascaraBin = PasarBinario(octeto2Mascara);
+                    String octeto3MascaraBin = PasarBinario(octeto3Mascara);
+                    String octeto4MascaraBin = PasarBinario(octeto4Mascara);
+
+                    //Creamos un Array de Enteros para guardar la máscara en Binario.
+
+                    int[] ArrayMascara = TransformarArray(octeto1MascaraBin, octeto2MascaraBin, octeto3MascaraBin, octeto4MascaraBin);
+                    System.out.println("Array Máscara");
+                    imprimirArray(ArrayMascara);
+                    System.out.println();
                     break;
 
                 default:
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Solo puedes introducir números.");
         }
-
-        String mascara = validarMascara();
 
         //Dividimos la IP en 4 partes.
         String[] octetoIP = IP.split("\\."); /*Split es para dividir la ip en partes. El caracter que marca el momento de división es el punto.*/
@@ -65,31 +79,15 @@ public class CalcularIP {
         String octeto4IPBin = PasarBinario(octeto4IP);
 
         //Creamos un Array de Enteros para guardar la IP en Binario.
-        int [] ArrayIP = TransformarArray(octeto1IPBin, octeto2IPBin, octeto3IPBin, octeto4IPBin);
+        int[] ArrayIP = TransformarArray(octeto1IPBin, octeto2IPBin, octeto3IPBin, octeto4IPBin);
         System.out.println("Array IP");
         imprimirArray(ArrayIP);
+        System.out.println();
 
         //Dividimos la máscara en 4 partes.
-        String[] octetoMascara = mascara.split("\\.");
-
-        String octeto1Mascara = octetoMascara[0];
-        String octeto2Mascara = octetoMascara[1];
-        String octeto3Mascara = octetoMascara[2];
-        String octeto4Mascara = octetoMascara[3];
-
-        String octeto1MascaraBin = PasarBinario(octeto1Mascara);
-        String octeto2MascaraBin = PasarBinario(octeto2Mascara);
-        String octeto3MascaraBin = PasarBinario(octeto3Mascara);
-        String octeto4MascaraBin = PasarBinario(octeto4Mascara);
-
-        //Creamos un Array de Enteros para guardar la máscara en Binario.
-
-        int[] ArrayMascara = TransformarArray(octeto1MascaraBin, octeto2MascaraBin, octeto3MascaraBin, octeto4MascaraBin);
-        System.out.println("Array Máscara");
-        imprimirArray(ArrayMascara);
     }
 
-    public static String validarIP(){
+    public static String validarIP() {
 
         Scanner sc = new Scanner(System.in);
         String IP = "";
@@ -97,51 +95,50 @@ public class CalcularIP {
         int contadorValido = 0;
         //boolean salir = true;
 
-        do{
+        do {
             contadorValido = 0;
 
-            try{
+            try {
 
                 IP = sc.nextLine();
 
                 valido = soloNumerosYPuntos(IP);     //Comprobamos que solo se introducen números y puntos.
 
-                if (!valido){
+                if (!valido) {
                     contadorValido++;
                 }
 
                 valido = maxYmin3Puntos(IP);         //Comprobamos que hay min 3 puntos y max 3 puntos.
 
-                if (!valido){
+                if (!valido) {
                     contadorValido++;
                 }
 
                 valido = noPuntosInicioFinal(IP);    //Comprobamos que no hay puntos ni al inicio ni al final.
 
-                if (!valido){
+                if (!valido) {
                     contadorValido++;
                 }
 
                 valido = noPuntosSeguidos(IP);       //Comprobamos que no hay 2 puntos seguidos
 
-                if (!valido){
+                if (!valido) {
                     contadorValido++;
                 }
 
                 valido = numerosDel0Al255(IP);       //Comprobamos que los números están entre el 0 y el 255
 
-                if (!valido){
+                if (!valido) {
                     contadorValido++;
                 }
 
-            }
-            catch (Exception e){
+            } catch (Exception e) {
 
             }
 
-        } while(contadorValido != 0);
+        } while (contadorValido != 0);
 
-        return(IP);
+        return (IP);
     }
 
     public static String validarMascara() {
@@ -151,100 +148,106 @@ public class CalcularIP {
         int contadorValido = 0;
         //boolean salir = true;
 
-        do{
+        do {
             contadorValido = 0;
 
-            try{
+            try {
 
                 mask = sc.nextLine();
 
                 valido = soloNumerosYPuntos(mask);     //Comprobamos que solo se introducen números y puntos.
 
-                if (!valido){
+                if (!valido) {
                     contadorValido++;
                 }
 
                 valido = maxYmin3Puntos(mask);         //Comprobamos que hay min 3 puntos y max 3 puntos.
 
-                if (!valido){
+                if (!valido) {
                     contadorValido++;
                 }
 
                 valido = noPuntosInicioFinal(mask);    //Comprobamos que no hay puntos ni al inicio ni al final.
 
-                if (!valido){
+                if (!valido) {
                     contadorValido++;
                 }
 
                 valido = noPuntosSeguidos(mask);       //Comprobamos que no hay 2 puntos seguidos
 
-                if (!valido){
+                if (!valido) {
                     contadorValido++;
                 }
 
                 valido = numerosDel0Al255(mask);       //Comprobamos que los números están entre el 0 y el 255
 
-                if (!valido){
+                if (!valido) {
                     contadorValido++;
                 }
-            }
-            catch (Exception e){
+
+                valido = mascaraValida(mask);
+
+                if (!valido) {
+                    contadorValido++;
+                }
+
+            } catch (Exception e) {
             }
 
-        } while(contadorValido != 0);
+        } while (contadorValido != 0);
+
 
         return mask;
     }
-
     //CAPTURA DE EXCEPCIONES
 
     //Captura excepción, solo pueden ser números y puntos.
-    public static boolean soloNumerosYPuntos (String IP){
+    public static boolean soloNumerosYPuntos(String IP) {
 
         boolean valido = true;
 
-        for(int i = 0; i < IP.length(); i++){
+        for (int i = 0; i < IP.length(); i++) {
             char caracter = IP.charAt(i);
             int caracterInt = (int) caracter;
-            if(caracterInt != 46 && caracterInt < 48 || caracterInt > 57){
+            if (caracterInt != 46 && caracterInt < 48 || caracterInt > 57) {
                 System.out.println("Formato no válido, solo se pueden ingresar carácteres numéricos y puntos. Inténtalo de nuevo:");
                 valido = false;
             }
         }
-        return(valido);
+        return (valido);
     }
 
     //Captura excepción, deben ser 3 puntos si o si
-    public static boolean maxYmin3Puntos (String IP){
+    public static boolean maxYmin3Puntos(String IP) {
 
         boolean valido = true;
         char punto = '.';
         int contadorPunto = 0;
 
-        for(int i = 0; i < IP.length(); i++){
-            if (IP.charAt(i) == punto){
+        for (int i = 0; i < IP.length(); i++) {
+            if (IP.charAt(i) == punto) {
                 contadorPunto++;
             }
         }
-        if(contadorPunto != 3){
+        if (contadorPunto != 3) {
             System.out.println("Formato no válido, se ha insertado una cantidad de puntos incorrecta. Inténtalo de nuevo:");
             contadorPunto = 0;
             valido = false;
         }
 
-        return(valido);
+        return (valido);
     }
 
     //Captura que no haya puntos en el índice 0 y último índice
-    public static boolean noPuntosInicioFinal (String IP){
+    public static boolean noPuntosInicioFinal(String IP) {
 
         boolean valido = true;
 
-        if(IP.charAt(0) == '.'){
+        if (IP.charAt(0) == '.') {
             System.out.println("Formato no válido, has insertado un punto al inicio. Inténtalo de nuevo:");
             valido = false;
         }
-        if(IP.charAt(IP.length() - 1) == '.'){
+        if (IP.charAt(IP.length() - 1) == '.') {
             System.out.println("Formato no válido, has insertado un punto al final. Inténtalo de nuevo:");
             valido = false;
         }
@@ -252,7 +255,7 @@ public class CalcularIP {
     }
 
     //Captura que no hayan 2 puntos seguidos
-    public static boolean noPuntosSeguidos(String IP){
+    public static boolean noPuntosSeguidos(String IP) {
 
         boolean valido = true;
 
@@ -263,22 +266,22 @@ public class CalcularIP {
         boolean salir2 = false;
         boolean salir3 = false;
 
-        for(int i = 0; i < IP.length(); i++){
-            if(IP.charAt(i) == '.' && salir1 == false){
+        for (int i = 0; i < IP.length(); i++) {
+            if (IP.charAt(i) == '.' && !salir1) {
                 primeraPosPunto = i;
                 salir1 = true;
             }
-            if (IP.charAt(i) == '.' && salir2 == false && i != primeraPosPunto){
+            if (IP.charAt(i) == '.' && !salir2 && i != primeraPosPunto) {
                 segundaPosPunto = i;
                 salir2 = true;
             }
-            if (IP.charAt(i) == '.' && salir3 == false && i != primeraPosPunto && i != segundaPosPunto){
+            if (IP.charAt(i) == '.' && !salir3 && i != primeraPosPunto && i != segundaPosPunto) {
                 terceraPosPunto = i;
                 salir3 = true;
             }
         }
 
-        if (segundaPosPunto == primeraPosPunto + 1 || terceraPosPunto == segundaPosPunto + 1){
+        if (segundaPosPunto == primeraPosPunto + 1 || terceraPosPunto == segundaPosPunto + 1) {
             System.out.println("Formato no válido, has introducido dos puntos seguidos. Inténtalo de nuevo:");
             valido = false;
         }
@@ -286,7 +289,7 @@ public class CalcularIP {
     }
 
     //Verificar de los número solo pueden ir del 0 al 255
-    public static boolean numerosDel0Al255(String ipmask){
+    public static boolean numerosDel0Al255(String ipmask) {
 
         boolean valido = true;
 
@@ -310,11 +313,11 @@ public class CalcularIP {
             System.out.println("Formato no válido, debes insertar valores entre el 0 y el 255. Inténtalo de nuevo:");
             valido = false;
         }
-        return(valido);
+        return (valido);
     }
 // FUNCION PARA PASAR A BINARIO
 
-    public static String PasarBinario (String octeto){
+    public static String PasarBinario(String octeto) {
 
         /*Esto para pasar los numeros a binario y ponerle los 0 necesarios a la izquierda.*/
         octeto = String.format("%8s", Integer.toBinaryString(Integer.parseInt(octeto))).replace(' ', '0');
@@ -323,38 +326,38 @@ public class CalcularIP {
     }
 //Función para tener los octetos en un Array de Enteros
 
-    public static int[] TransformarArray(String octeto1, String octeto2, String octeto3, String octeto4){
+    public static int[] TransformarArray(String octeto1, String octeto2, String octeto3, String octeto4) {
 
         int largo = octeto1.length() + octeto2.length() + octeto3.length() + octeto4.length();
 
-        char [] array = new char[largo];
-        int [] arrayInt = new int[array.length];
+        char[] array = new char[largo];
+        int[] arrayInt = new int[array.length];
         int j = 0;
 
-        for(int i = 0; i < largo; i++){
+        for (int i = 0; i < largo; i++) {
 
-            if(i <= 7){
+            if (i <= 7) {
                 array[i] = octeto1.charAt(j);
                 j++;
-                if (j > 7){
+                if (j > 7) {
                     j = 0;
                 }
             }
-            if(i > 7 && i <= 14){
+            if (i > 7 && i <= 14) {
                 array[i] = octeto2.charAt(j);
                 j++;
-                if (j > 7){
+                if (j > 7) {
                     j = 0;
                 }
             }
-            if(i > 14 && i <= 23) {
+            if (i > 14 && i <= 23) {
                 array[i] = octeto3.charAt(j);
                 j++;
                 if (j > 7) {
                     j = 0;
                 }
             }
-            if(i > 23 && i <= 31) {
+            if (i > 23 && i <= 31) {
                 array[i] = octeto4.charAt(j);
                 j++;
                 if (j > 7) {
@@ -363,24 +366,60 @@ public class CalcularIP {
             }
         }
 
-        for (int i = 0; i < array.length; i++){
-            arrayInt [i] = Integer.parseInt(String.valueOf(array[i]));
+        for (int i = 0; i < array.length; i++) {
+            arrayInt[i] = Integer.parseInt(String.valueOf(array[i]));
         }
 
-        return(arrayInt);
+        return (arrayInt);
     }
 
-    public static void imprimirArray(int [] array){
+    public static void imprimirArray(int[] array) {
 
-        for(int i = 0; i < array.length; i++){
-            System.out.print(array[i]);
+        for (int j : array) {
+            System.out.print(j);
         }
 
     }
 
-    public static Boolean validarCIDR (int CIDR){
+    public static Boolean validarCIDR(int CIDR) {
         return CIDR >= 0 && CIDR <= 32;
     }
+
+    public static Boolean mascaraValida(String mask) {
+
+        boolean valido = true;
+
+        String[] octetoMascara = mask.split("\\.");
+
+        String octeto1Mascara = octetoMascara[0];
+        String octeto2Mascara = octetoMascara[1];
+        String octeto3Mascara = octetoMascara[2];
+        String octeto4Mascara = octetoMascara[3];
+
+        String octeto1MascaraBin = PasarBinario(octeto1Mascara);
+        String octeto2MascaraBin = PasarBinario(octeto2Mascara);
+        String octeto3MascaraBin = PasarBinario(octeto3Mascara);
+        String octeto4MascaraBin = PasarBinario(octeto4Mascara);
+
+        //Creamos un Array de Enteros para guardar la máscara en Binario.
+
+        int[] ArrayMascara = TransformarArray(octeto1MascaraBin, octeto2MascaraBin, octeto3MascaraBin, octeto4MascaraBin);
+        int cont = 0;
+
+        for (int i = 0; i < ArrayMascara.length; i++) {
+            if (ArrayMascara[i] == 0) {
+                if (ArrayMascara[i + 1] == 1) {
+                    System.out.println("Formato de máscara no válido. Inténtalo de nuevo:");
+                    valido = false;
+                    break;
+                } else if (ArrayMascara[i + 1] == 0){
+                    cont++;
+                }
+            } else if (ArrayMascara[i] == 1) {
+                cont++;
+            }
+        }
+
+        return (valido);
+    }
 }
-
-
