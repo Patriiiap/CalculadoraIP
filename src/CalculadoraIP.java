@@ -7,8 +7,9 @@ public class CalculadoraIP {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
+        //Variables generales que se usan en el main
         String mascara = "";
-        int CIDR;
+        int CIDR = 0;
         int opcion;
 
         System.out.println("Inserta tu IP");
@@ -108,16 +109,22 @@ public class CalculadoraIP {
         //CREAMOS un Array de Enteros para guardar la máscara en Binario.
         int[] ArrayMascara = TransformarArray(octeto1MascaraBin, octeto2MascaraBin, octeto3MascaraBin, octeto4MascaraBin);
 
-        //CREAMOS un Array para guardar la direcc de red en Binario.
+            //En caso de no haber usado el CDIR, rellenamos la variable para después poder imprimirla.
+        if(CIDR == 0){
+            CIDR = numeroDe1s(ArrayMascara);
+        }
+
+        //CREAMOS un Array para guardar la dirección de red en Binario.
         int [] ArrayDireccRed = MultiplicarIPMasc(ArrayIP, ArrayMascara);
 
-        //CREAMOS un Array para guardar la direcc de Broadcast en Binario.
+        //CREAMOS un Array para guardar la direcc de Broadcast en Binario, llamamos a la función para multiplicar IP y Máscara.
         int[] ArrayBroadcast = BroadcastBin(ArrayDireccRed, ArrayMascara);
-        //imprimirArrayInt(ArrayBroadcast);
 
+        //CREAMOS una variable tipo string y llamamos a la función SepararBinarios (Que separa un Array de enteros en binario, y la convierte en una dirección tipo String)
         String direccionRed = SepararBinarios(ArrayDireccRed);
-        System.out.println("La dirección de red es: " + direccionRed);
+        System.out.println("La dirección de red es: " + direccionRed + "/" + CIDR);
 
+        //Volvemos a usar la función para convertir un Array de Binarios en una dirección en String
         String direccionBroadcast = SepararBinarios(ArrayBroadcast);
         System.out.println("La dirección de Broadcast es: " + direccionBroadcast);
 
@@ -146,12 +153,10 @@ public class CalculadoraIP {
         int contadorValido = 0;
         //boolean salir = true;
 
-
         do{
             contadorValido = 0;
 
             try{
-
                 IP = sc.nextLine();
 
                 valido = soloNumerosYPuntos(IP);     //Comprobamos que solo se introducen números y puntos.
@@ -183,12 +188,10 @@ public class CalculadoraIP {
                 if (!valido){
                     contadorValido++;
                 }
-
             }
             catch (Exception e){
 
             }
-
         } while(contadorValido != 0);
 
         return(IP);
@@ -201,7 +204,6 @@ public class CalculadoraIP {
         String mask = "";
         boolean valido = true;
         int contadorValido = 0;
-        //boolean salir = true;
 
         do {
             contadorValido = 0;
@@ -424,7 +426,7 @@ public class CalculadoraIP {
 
     public static String PasarBinario (String octeto){
 
-        /*Esto para pasar los numeros a binario y ponerle los 0 necesarios a la izquierda.*/
+        //Esto para pasar los numeros a binario y ponerle los 0s necesarios a la izquierda.
         octeto = String.format("%8s", Integer.toBinaryString(Integer.parseInt(octeto))).replace(' ', '0');
 
         return (octeto);
@@ -623,15 +625,7 @@ public class CalculadoraIP {
             }
         }
 
-        /*imprimirArray(octeto1);
-        System.out.println(" ");
-        imprimirArray(octeto2);
-        System.out.println(" ");
-        imprimirArray(octeto3);
-        System.out.println(" ");
-        imprimirArray(octeto4);*/
-
-        //Pasamos a String los Arrays
+                //Pasamos a String los Arrays
         StringBuffer octeto1String = new StringBuffer();
         StringBuffer octeto2String = new StringBuffer();
         StringBuffer octeto3String = new StringBuffer();
@@ -661,7 +655,7 @@ public class CalculadoraIP {
         octeto4String.toString();
 
 
-        //Pasamos a decimal los String en Binario
+                //Pasamos a decimal los String en Binario
 
         int octeto1final = Integer.parseInt(String.valueOf(octeto1String), 2);
         int octeto2final = Integer.parseInt(String.valueOf(octeto2String), 2);
@@ -678,11 +672,10 @@ public class CalculadoraIP {
     public static int numeroDe0s (int [] ArrayMascara){
 
         int numeroDe0s = 0;
-        boolean entrar = true;
 
-        for(int i = ArrayMascara.length - 1; i > 0; i = i-1){                                     //EN MANTENIMIENTO
+        for(int i = ArrayMascara.length - 1; i > 0; i = i-1){
 
-            if (ArrayMascara[i] == 0 && entrar == true){
+            if (ArrayMascara[i] == 0){
                 numeroDe0s++;
             }
         }
@@ -737,6 +730,20 @@ public class CalculadoraIP {
                 }
             }
         }
+    }
+
+    //FUNCION para contar en numero de 1s de la Máscara en decimal.
+
+    public static int numeroDe1s (int [] ArrayMascara){
+
+        int numeroDe1s = 0;
+
+        for(int i = 0; i < ArrayMascara.length; i++){
+            if(ArrayMascara[i] == 1){
+                numeroDe1s++;
+            }
+        }
+        return(numeroDe1s);
     }
 
 
