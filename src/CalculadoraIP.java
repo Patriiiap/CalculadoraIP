@@ -15,8 +15,6 @@ public class CalculadoraIP {
 
         String mascara = "255.255.255.192";
 
-
-
         //DIVIDIMOS la IP en 4 partes.
         String[] octetoIP = IP.split("\\."); /*Split es para dividir la ip en partes. El caracter que marca el momento de división es el punto.*/
 
@@ -30,11 +28,8 @@ public class CalculadoraIP {
         String octeto3IPBin = PasarBinario(octeto3IP);
         String octeto4IPBin = PasarBinario(octeto4IP);
 
-
-
         //CREAMOS un Array de Enteros para guardar la IP en Binario.
         int [] ArrayIP = TransformarArray(octeto1IPBin, octeto2IPBin, octeto3IPBin, octeto4IPBin);
-
 
         //DIVIDIMOS la máscara en 4 partes.
         String[] octetoMascara = mascara.split("\\.");
@@ -53,26 +48,8 @@ public class CalculadoraIP {
 
         int[] ArrayMascara = TransformarArray(octeto1MascaraBin, octeto2MascaraBin, octeto3MascaraBin, octeto4MascaraBin);
 
-
-
-        /*System.out.println("Calculo Binario Dirección de Red");
-        imprimirArrayInt(ArrayIP);
-        System.out.println(" ");
-        imprimirArrayInt(ArrayMascara);
-        System.out.println(" ");*/
-
         //CREAMOS un Array para guardar la direcc de red en Binario.
         int [] ArrayDireccRed = MultiplicarIPMasc(ArrayIP, ArrayMascara);
-        /*imprimirArrayInt(ArrayDireccRed);
-        System.out.println(" ");*/
-        int numeroDe0s = numeroDe0s(ArrayMascara); //COntamos los 0s para poder calcular el broadcast
-
-
-        /*System.out.println("Calculo Binario Broadcast: ");
-        imprimirArrayInt(ArrayIP);
-        System.out.println(" ");
-        imprimirArrayInt(ArrayMascara);
-        System.out.println(" ");*/
 
         //CREAMOS un Array para guardar la direcc de Broadcast en Binario.
         int[] ArrayBroadcast = BroadcastBin(ArrayDireccRed, ArrayMascara);
@@ -87,10 +64,9 @@ public class CalculadoraIP {
 
         System.out.println("Rango de direcciones disponibles: " + primerRango(direccionRed) + " - " + rangoBroadcast(direccionBroadcast));
 
+        int numeroDe0s = numeroDe0s(ArrayMascara); //Contamos los 0s para calcular el numero de hosts disponibles.
         int numHosts = CalcularHosts(numeroDe0s);
         System.out.println("Número de Hosts disponibles: " + numHosts);
-
-
 
         //Averiguamos el tipo de IP y la Clase con las funciones.
         publicaPrivada(IP);
@@ -279,8 +255,6 @@ public class CalculadoraIP {
     }
 
 
-
-
 // FUNCION PARA PASAR A BINARIO
 
     public static String PasarBinario (String octeto){
@@ -290,7 +264,6 @@ public class CalculadoraIP {
 
         return (octeto);
     }
-
 
 
 //FUNCION para tener los octetos en un Array de Enteros
@@ -603,19 +576,7 @@ public class CalculadoraIP {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+//FUNCIONES para imprimir los Arrays de binario (No se están usando ahora).
 
     public static void imprimirArray(String [] array){
 
