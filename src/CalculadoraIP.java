@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CalculadoraIP {
@@ -5,15 +6,15 @@ public class CalculadoraIP {
 
     public static void main(String[] args) {
 
+        Scanner sc = new Scanner(System.in);
+        String mascara = "";
+        int CIDR;
+        int opcion;
+
         System.out.println("Inserta tu IP");
         String IP = validarIP();
 
         System.out.println("Tu IP es: " + IP);
-
-        //System.out.println("Ahora elige cómo quieres insertar la máscara: 1 Decimal 2 CDIR: ");
-        //int eleccionMascara = eleccionMascara();
-
-        String mascara = "255.255.255.192";
 
         //DIVIDIMOS la IP en 4 partes.
         String[] octetoIP = IP.split("\\."); /*Split es para dividir la ip en partes. El caracter que marca el momento de división es el punto.*/
@@ -31,6 +32,66 @@ public class CalculadoraIP {
         //CREAMOS un Array de Enteros para guardar la IP en Binario.
         int [] ArrayIP = TransformarArray(octeto1IPBin, octeto2IPBin, octeto3IPBin, octeto4IPBin);
 
+        System.out.println("Ahora, ¿qué notación quieres utilizar para introducir la máscara? (PULSA 1 o 2)");
+        System.out.println("1. Notación CIDR       2. Notación decimal");
+
+        boolean salir = true; //Variable para salir del try catch
+
+        do{
+            try {
+                salir = true;
+
+                do {
+                    opcion = sc.nextInt();
+                    if (opcion > 2 || opcion < 1) {
+                        System.out.println("Introduce una opción válida.");
+                    }
+                } while (opcion > 2 || opcion < 1);
+
+                switch (opcion) {
+                    case 1:
+                        do {
+                            System.out.println("Introduce el CIDR:");
+                            CIDR = sc.nextInt();
+                            if (!validarCIDR(CIDR)) {
+                                System.out.println("El CIDR debe ser un número del 0 al 32.");
+                            }
+                            if(validarCIDR(CIDR)){
+                                int[] ArrayMascaraCIDR = new int[32];
+                                int contador = 0;
+
+                                for(int i = 0; i < ArrayMascaraCIDR.length; i++){
+                                    if(contador < CIDR){
+                                        ArrayMascaraCIDR[i] = 1;
+                                        contador++;
+                                    }
+                                    else{
+                                        ArrayMascaraCIDR[i] = 0;
+                                    }
+                                }
+
+                                mascara = SepararBinarios(ArrayMascaraCIDR);
+
+                            }
+                        } while (!validarCIDR(CIDR));
+                        break;
+
+                    case 2:
+                        System.out.println("Introduce la máscara:");
+                        mascara = validarMascara();
+                        break;
+
+                    default:
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Solo puedes introducir números.");
+                salir = false;
+                sc.next();
+            }
+        }
+        while (salir == false);
+
+
         //DIVIDIMOS la máscara en 4 partes.
         String[] octetoMascara = mascara.split("\\.");
 
@@ -45,7 +106,6 @@ public class CalculadoraIP {
         String octeto4MascaraBin = PasarBinario(octeto4Mascara);
 
         //CREAMOS un Array de Enteros para guardar la máscara en Binario.
-
         int[] ArrayMascara = TransformarArray(octeto1MascaraBin, octeto2MascaraBin, octeto3MascaraBin, octeto4MascaraBin);
 
         //CREAMOS un Array para guardar la direcc de red en Binario.
@@ -54,7 +114,6 @@ public class CalculadoraIP {
         //CREAMOS un Array para guardar la direcc de Broadcast en Binario.
         int[] ArrayBroadcast = BroadcastBin(ArrayDireccRed, ArrayMascara);
         //imprimirArrayInt(ArrayBroadcast);
-
 
         String direccionRed = SepararBinarios(ArrayDireccRed);
         System.out.println("La dirección de red es: " + direccionRed);
@@ -97,31 +156,31 @@ public class CalculadoraIP {
 
                 valido = soloNumerosYPuntos(IP);     //Comprobamos que solo se introducen números y puntos.
 
-                if (valido == false){
+                if (!valido){
                     contadorValido++;
                 }
 
                 valido = maxYmin3Puntos(IP);         //Comprobamos que hay min 3 puntos y max 3 puntos.
 
-                if (valido == false){
+                if (!valido){
                     contadorValido++;
                 }
 
                 valido = noPuntosInicioFinal(IP);    //Comprobamos que no hay puntos ni al inicio ni al final.
 
-                if (valido == false){
+                if (!valido){
                     contadorValido++;
                 }
 
                 valido = noPuntosSeguidos(IP);       //Comprobamos que no hay 2 puntos seguidos
 
-                if (valido == false){
+                if (!valido){
                     contadorValido++;
                 }
 
                 valido = numerosDel0Al255(IP);       //Comprobamos que los números están entre el 0 y el 255
 
-                if (valido == false){
+                if (!valido){
                     contadorValido++;
                 }
 
@@ -133,6 +192,73 @@ public class CalculadoraIP {
         } while(contadorValido != 0);
 
         return(IP);
+    }
+
+    //VALIDAR MASCARA
+
+    public static String validarMascara() {
+        Scanner sc = new Scanner(System.in);
+        String mask = "";
+        boolean valido = true;
+        int contadorValido = 0;
+        //boolean salir = true;
+
+        do {
+            contadorValido = 0;
+
+            try {
+
+                mask = sc.nextLine();
+
+                valido = soloNumerosYPuntos(mask);     //Comprobamos que solo se introducen números y puntos.
+
+                if (!valido) {
+                    contadorValido++;
+                }
+
+                valido = maxYmin3Puntos(mask);         //Comprobamos que hay min 3 puntos y max 3 puntos.
+
+                if (!valido) {
+                    contadorValido++;
+                }
+
+                valido = noPuntosInicioFinal(mask);    //Comprobamos que no hay puntos ni al inicio ni al final.
+
+                if (!valido) {
+                    contadorValido++;
+                }
+
+                valido = noPuntosSeguidos(mask);       //Comprobamos que no hay 2 puntos seguidos
+
+                if (!valido) {
+                    contadorValido++;
+                }
+
+                valido = numerosDel0Al255(mask);       //Comprobamos que los números están entre el 0 y el 255
+
+                if (!valido) {
+                    contadorValido++;
+                }
+
+                valido = mascaraValida(mask);       //Comprobamos que en la máscara no hay 0s delante de 1s
+
+                if (!valido) {
+                    contadorValido++;
+                }
+
+            } catch (Exception e) {
+            }
+
+        } while (contadorValido != 0);
+
+
+        return mask;
+    }
+
+    //Valida el CDIR
+
+    public static Boolean validarCIDR(int CIDR) {
+        return CIDR >= 0 && CIDR <= 32;
     }
 
 
@@ -147,7 +273,7 @@ public class CalculadoraIP {
             char caracter = IP.charAt(i);
             int caracterInt = (int) caracter;
             if(caracterInt != 46 && caracterInt < 48 || caracterInt > 57){
-                System.out.println("Sólo se pueden ingresar carácteres numéricos y puntos, inserta tu IP de nuevo");
+                System.out.println("Formato no válido, sólo se pueden ingresar carácteres numéricos y puntos.");
                 valido = false;
             }
         }
@@ -167,7 +293,7 @@ public class CalculadoraIP {
             }
         }
         if(contadorPunto != 3){
-            System.out.println("IP no válida, se ha insertado una cantidad de puntos incorrecta");
+            System.out.println("Formato no válido, se ha insertado una cantidad de puntos incorrecta.");
             contadorPunto = 0;
             valido = false;
         }
@@ -181,11 +307,11 @@ public class CalculadoraIP {
         boolean valido = true;
 
         if(IP.charAt(0) == '.'){
-            System.out.println("IP no válida, has insertado un punto al inicio, inserta la IP de nuevo");
+            System.out.println("Formato no válido, has insertado un punto al inicio.");
             valido = false;
         }
         if(IP.charAt(IP.length() - 1) == '.'){
-            System.out.println("IP no válida, has insertado un punto al final, inserta la IP de nuevo");
+            System.out.println("Formato no válido, has insertado un punto al final.");
             valido = false;
         }
         return (valido);
@@ -252,6 +378,45 @@ public class CalculadoraIP {
         }
 
         return(valido);
+    }
+
+    //Verifica que la máscara  no tiene 0s delante de 1s
+
+    public static Boolean mascaraValida(String mask) {
+
+        boolean valido = true;
+
+        String[] octetoMascara = mask.split("\\.");
+
+        String octeto1Mascara = octetoMascara[0];
+        String octeto2Mascara = octetoMascara[1];
+        String octeto3Mascara = octetoMascara[2];
+        String octeto4Mascara = octetoMascara[3];
+
+        String octeto1MascaraBin = PasarBinario(octeto1Mascara);
+        String octeto2MascaraBin = PasarBinario(octeto2Mascara);
+        String octeto3MascaraBin = PasarBinario(octeto3Mascara);
+        String octeto4MascaraBin = PasarBinario(octeto4Mascara);
+
+        //Creamos un Array de Enteros para guardar la máscara en Binario.
+
+        int[] ArrayMascara = TransformarArray(octeto1MascaraBin, octeto2MascaraBin, octeto3MascaraBin, octeto4MascaraBin);
+        int cont = 0;
+        int unos = 0;
+
+        for (int i = 0; i < ArrayMascara.length; i++) {
+            if (ArrayMascara[i] == 0) {
+                if (ArrayMascara[i + 1] == 1) {
+                    System.out.println("Formato de máscara no válido. Inténtalo de nuevo:");
+                    valido = false;
+                    break;
+                }
+            } else if (ArrayMascara[i] == 1) {
+                unos = cont++;
+            }
+        }
+
+        return (valido);
     }
 
 
