@@ -699,9 +699,9 @@ public class CalculadoraIP {
                 IP.startsWith("172.23.") || IP.startsWith("172.24.") || IP.startsWith("172.25.") ||
                 IP.startsWith("172.26.") || IP.startsWith("172.27.") || IP.startsWith("172.28.") ||
                 IP.startsWith("172.29.") || IP.startsWith("172.30.") || IP.startsWith("172.31.")) {
-            System.out.print("La IP es: Privada");
+            System.out.print("La IP es privada");
         } else {
-            System.out.print("La IP es: Pública");
+            System.out.print("La IP es pública");
         }
     }
 
@@ -711,21 +711,21 @@ public class CalculadoraIP {
         char primerCaracter = octeto1binario.charAt(0);
 
         if (primerCaracter == '0') {
-            System.out.println(" de Clase A");
+            System.out.println(" de clase A");
         } else if (primerCaracter == '1') {
             char segundoCaracter = octeto1binario.charAt(1);
             if (segundoCaracter == '0') {
-                System.out.println(" de Clase B");
+                System.out.println(" de clase B");
             } else if (segundoCaracter == '1') {
                 char tercerCaracter = octeto1binario.charAt(2);
                 if (tercerCaracter == '0') {
-                    System.out.println(" de Clase C");
+                    System.out.println(" de clase C");
                 } else if (tercerCaracter == '1') {
                     char cuartoCaracter = octeto1binario.charAt(3);
                     if (cuartoCaracter == '0') {
-                        System.out.println(" de Clase D");
+                        System.out.println(" de clase D");
                     } else if (cuartoCaracter == '1') {
-                        System.out.println(" de Clase E");
+                        System.out.println(" de clase E");
                     }
                 }
             }
