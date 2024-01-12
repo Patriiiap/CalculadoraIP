@@ -85,8 +85,16 @@ public class CalculadoraIP {
         String direccionBroadcast = SepararBinarios(ArrayBroadcast);
         System.out.println("La dirección de Broadcast es: " + direccionBroadcast);
 
+        System.out.println("Rango de direcciones disponibles: " + primerRango(direccionRed) + " - " + rangoBroadcast(direccionBroadcast));
+
         int numHosts = CalcularHosts(numeroDe0s);
         System.out.println("Número de Hosts disponibles: " + numHosts);
+
+
+
+        //Averiguamos el tipo de IP y la Clase con las funciones.
+        publicaPrivada(IP);
+        AveriguarClase(octeto1IPBin);
 
     }
 
@@ -348,21 +356,48 @@ public class CalculadoraIP {
         return(ArrayDireccRed);
     }
 
-//FUNCION para contar en numero de 0s de la dirección de red.
+//FUNCIONES para calcular el rango de IPs disponibles
 
-    public static int numeroDe0s (int [] ArrayMascara){
+    public static String primerRango(String DireccRed) {
+        String[] octetos = DireccRed.split("\\.");
 
-        int numeroDe0s = 0;
-        boolean entrar = true;
+        String primeraDirecc = "";
 
-        for(int i = ArrayMascara.length - 1; i > 0; i = i-1){                                     //EN MANTENIMIENTO
+        String octeto1 = octetos[0];
+        String octeto2 = octetos[1];
+        String octeto3 = octetos[2];
+        String octeto4 = octetos[3];
 
-            if (ArrayMascara[i] == 0 && entrar == true){
-                numeroDe0s++;
-            }
+        int ultimoocteto = Integer.parseInt(octetos[3]);
+        int penultimoocteto = Integer.parseInt(octetos[2]);
+
+        if (ultimoocteto < 255) {
+            primeraDirecc = (octeto1 + "." + octeto2 + "." + octeto3 + "." + (ultimoocteto + 1));
+        } else  {
+            primeraDirecc = (octeto1 + "." + octeto2 + "." + (penultimoocteto + 1) + "." + 0);
         }
+        return (primeraDirecc);
+    }
 
-        return(numeroDe0s);
+    public static String rangoBroadcast(String broadcast) {
+        String[] octetos = broadcast.split("\\.");
+
+        String ultimaDirecc = "";
+
+        String octeto1 = octetos[0];
+        String octeto2 = octetos[1];
+        String octeto3 = octetos[2];
+        String octeto4 = octetos[3];
+
+        int ultimoocteto = Integer.parseInt(octetos[3]);
+        int penultimoocteto = Integer.parseInt(octetos[2]);
+
+        if (ultimoocteto > 0) {
+            ultimaDirecc = (octeto1 + "." + octeto2 + "." + octeto3 + "." + (ultimoocteto - 1));
+        } else {
+            ultimaDirecc = (octeto1 + "." + octeto2 + "." + (penultimoocteto - 1) + "." + 255);
+        }
+        return (ultimaDirecc);
     }
 
 //FUNCION para sacar la dirección de Broadcast en Binario
@@ -500,11 +535,72 @@ public class CalculadoraIP {
         return(direccion);
     }
 
+//FUNCION para contar en numero de 0s de la dirección de red.
+
+    public static int numeroDe0s (int [] ArrayMascara){
+
+        int numeroDe0s = 0;
+        boolean entrar = true;
+
+        for(int i = ArrayMascara.length - 1; i > 0; i = i-1){                                     //EN MANTENIMIENTO
+
+            if (ArrayMascara[i] == 0 && entrar == true){
+                numeroDe0s++;
+            }
+        }
+
+        return(numeroDe0s);
+    }
+
+//FUNCION para calcular el número de hosts disponibles.
     public static int CalcularHosts (int numDe0s){
 
         int numHosts = (int) Math.pow(2,numDe0s)-2;
         return (numHosts);
     }
+
+//FUNCION para decir si la IP es pública o privada
+
+    public static void publicaPrivada(String IP) {
+        if (IP.startsWith("10.") || IP.startsWith("192.168.") || IP.startsWith("172.16.") ||
+                IP.startsWith("172.17.") || IP.startsWith("172.18.") || IP.startsWith("172.19.") ||
+                IP.startsWith("172.20.") || IP.startsWith("172.21.") || IP.startsWith("172.22.") ||
+                IP.startsWith("172.23.") || IP.startsWith("172.24.") || IP.startsWith("172.25.") ||
+                IP.startsWith("172.26.") || IP.startsWith("172.27.") || IP.startsWith("172.28.") ||
+                IP.startsWith("172.29.") || IP.startsWith("172.30.") || IP.startsWith("172.31.")) {
+            System.out.print("La IP es: Privada");
+        } else {
+            System.out.print("La IP es: Pública");
+        }
+    }
+
+//FUNCION para decir la clase de la IP (A, B, C, D, E)
+
+    public static void AveriguarClase(String octeto1binario) {
+        char primerCaracter = octeto1binario.charAt(0);
+
+        if (primerCaracter == '0') {
+            System.out.println(" de Clase A");
+        } else if (primerCaracter == '1') {
+            char segundoCaracter = octeto1binario.charAt(1);
+            if (segundoCaracter == '0') {
+                System.out.println(" de Clase B");
+            } else if (segundoCaracter == '1') {
+                char tercerCaracter = octeto1binario.charAt(2);
+                if (tercerCaracter == '0') {
+                    System.out.println(" de Clase C");
+                } else if (tercerCaracter == '1') {
+                    char cuartoCaracter = octeto1binario.charAt(3);
+                    if (cuartoCaracter == '0') {
+                        System.out.println(" de Clase D");
+                    } else if (cuartoCaracter == '1') {
+                        System.out.println(" de Clase E");
+                    }
+                }
+            }
+        }
+    }
+
 
 
 
