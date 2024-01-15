@@ -138,8 +138,11 @@ public class CalculadoraIP {
         publicaPrivada(IP);
         AveriguarClase(octeto1IPBin);
 
-    }
+        //Pasamos IP a Hexadecimal
 
+        pasarHexadecimal(IP);
+
+    }
 
 
     //FUNCIONES
@@ -347,7 +350,7 @@ public class CalculadoraIP {
         }
 
         if (segundaPosPunto == primeraPosPunto + 1 || terceraPosPunto == segundaPosPunto + 1){
-            System.out.println("IP no válida, has introducido dos puntos seguidos, introduce la IP de nuevo:");
+            System.out.println("Formato no válido, has introducido dos puntos seguidos.");
             valido = false;
         }
         return (valido);
@@ -375,7 +378,7 @@ public class CalculadoraIP {
         int subint4 = Integer.parseInt(substring4);
 
         if (subint1 < 0 || subint1 > 255 || subint2 < 0 || subint2 > 255 || subint3 < 0 || subint3 > 255 || subint4 < 0 || subint4 > 255) {
-            System.out.println("IP no válida, debes insertar valores entre el 0 y el 255, inserta tu IP de nuevo");
+            System.out.println("Formato no válido, debes insertar valores entre el 0 y el 255.");
             valido = false;
         }
 
@@ -744,6 +747,31 @@ public class CalculadoraIP {
             }
         }
         return(numeroDe1s);
+    }
+
+    //FUNCION para tener la IP en Hexadecimal
+
+    public static void pasarHexadecimal (String IP){
+
+        String[] octetos = IP.split("\\.");
+
+        String octeto1 = octetos[0];
+        String octeto2 = octetos[1];
+        String octeto3 = octetos[2];
+        String octeto4 = octetos[3];
+
+        int octeto1Int = Integer.parseInt(octeto1);
+        int octeto2Int = Integer.parseInt(octeto2);
+        int octeto3Int = Integer.parseInt(octeto3);
+        int octeto4Int = Integer.parseInt(octeto4);
+
+        String octeto1Hex = String.format("%2s", Integer.toHexString(octeto1Int)).replace(' ', '0');
+        String octeto2Hex = String.format("%2s", Integer.toHexString(octeto2Int)).replace(' ', '0');
+        String octeto3Hex = String.format("%2s", Integer.toHexString(octeto3Int)).replace(' ', '0');
+        String octeto4Hex = String.format("%2s", Integer.toHexString(octeto4Int)).replace(' ', '0');
+
+        System.out.println("La IP en hexadecimal es: " + octeto1Hex.toUpperCase() + ":" + octeto2Hex.toUpperCase()
+                + ":" + octeto3Hex.toUpperCase() + ":" + octeto4Hex.toUpperCase());
     }
 
 
